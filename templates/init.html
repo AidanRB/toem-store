@@ -1,0 +1,9 @@
+{% for message in get_flashed_messages() %}
+<div class="flash">{{ message }}</div>
+{% endfor %}
+Logging in...
+<script>
+    setTimeout(() => {
+        window.location.replace("/store.html")
+    }, 5000);
+</script>

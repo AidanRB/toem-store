@@ -1,0 +1,34 @@
+# Theopenem self-service webstore
+- open store.hcps.win
+    - server does a reverse nslookup for your ip
+    - potentials = /Computer/Search for:
+        - your ip
+        - your reverse dns hostname
+    - potentials = /Computer/ForceCheckin/[potentials.Id]
+    - potentials = /Computer/Get/[potentials.Id] where LastCheckinTime is in the last minute and LastIp is your ip
+    - if len(potentials) == 1, login as potentials[0]
+        - identify by .Id
+        - display name = (/Computer/GetSystemInfo/[potentials[0].Id]).Bios.SerialNumber
+    - else, ask user for service tag and repeat from /Computer/Search with it
+    - **once device logged in**
+        - /Computer/GetLoggedInUsers/[computer.Id]
+        - python-ldap query user's groups to see if they should have access to genetec
+    - return storefront
+        - use liquid template to return page with install buttons
+- post store.hcps.win/trigger
+    - authenticate
+
+## authenticate(request)
+- nshost = nslookup(request.ip)
+- potentials = /Computer/Search for:
+    - request.ip
+    - nshost
+- potentials = [potentials.Id where /Computer/ForceCheckin/[potentials.Id] == true]
+- potentials = /Computer/Get/[potentials.Id] where LastCheckinTime is in the last minute and LastIp is your ip
+- if len(potentials) == 1, login as potentials[0]
+    - identify by .Id
+    - display name = (/Computer/GetSystemInfo/[potentials[0].Id]).Bios.SerialNumber
+- else, ask user for service tag and repeat from /Computer/Search with it
+- **once device logged in**
+    - /Computer/GetLoggedInUsers/[computer.Id]
+    - python-ldap query user's groups to see if they should have access to genetec
