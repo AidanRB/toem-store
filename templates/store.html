@@ -2,3 +2,10 @@
 {% for message in get_flashed_messages() %}
 <div class="flash">{{ message }}</div>
 {% endfor %}
+<h1>Successful login!</h1>
+Computer name: {{ computer['Name'] }}
+<ul>
+    {% for module in modules %}
+    <li><a href="/run/{{ module['Guid'] }}">{{ module['Name'] }}</a></li>
+    {% endfor %}
+</ul>
